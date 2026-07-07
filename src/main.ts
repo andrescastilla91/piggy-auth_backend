@@ -1,9 +1,29 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe, Logger } from '@nestjs/common';
+import { Client } from 'pg';
+
+/** Crea el schema auth con una conexión raw ANTES de que TypeORM arranque.
+ *  TypeORM necesita que el schema exista para crear su tabla de migraciones.
+ */
+async function ensureAuthSchema() {
+  const client = new Client({
+    host:     process.env.POSTGRES_HOST     ?? 'localhost',
+    port:     Number(process.env.POSTGRES_PORT ?? 5432),
+    database: process.env.POSTGRES_DB       ?? 'piggy',
+    user:     process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  });
+  await client.connect();
+  await client.query('CREATE SCHEMA IF NOT EXISTS auth');
+  await client.end();
+}
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
+
+  await ensureAuthSchema();
 
   const app = await NestFactory.create(AppModule, {
     logger: ['error', 'warn', 'log'],
