@@ -23,7 +23,8 @@ import { HealthModule } from './health/health.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: false,
       migrations: [__dirname + '/migrations/*{.ts,.js}'],
-      migrationsRun: true,   // Corre migraciones pendientes al arrancar
+      migrationsRun: true,          // Corre migraciones pendientes al arrancar
+      migrationsTableName: 'public.typeorm_migrations', // Tabla de control en public (auth aún no existe al arrancar)
       ssl: process.env.NODE_ENV === 'production'
         ? { rejectUnauthorized: false }
         : false,
