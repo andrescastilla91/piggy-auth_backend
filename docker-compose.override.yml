@@ -1,0 +1,10 @@
+# =============================================================================
+#  PIGGY AUTH — Overrides de DESARROLLO LOCAL
+# =============================================================================
+
+services:
+  backend:
+    ports:
+      - "3020:3000"   # Puerto distinto a kids (3000) y pro (3010)
+    environment:
+      NODE_ENV: development

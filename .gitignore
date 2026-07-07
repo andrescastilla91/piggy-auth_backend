@@ -1,0 +1,34 @@
+# Dependencias
+node_modules/
+
+# Build output
+dist/
+
+# Variables de entorno con secretos
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Tests
+coverage/
+
+# Uploads temporales
+uploads/
+tmp/
+
+# Certificados y claves
+*.pem
+*.key
+*.crt

@@ -1,0 +1,16 @@
+# =============================================================================
+#  PIGGY AUTH — Railway Configuration
+#  Service: auth-backend → Root: /  (repo independiente)
+# =============================================================================
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+dockerBuildTarget = "production"
+
+[deploy]
+startCommand = "node dist/main"
+healthcheckPath = "/api/health"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3

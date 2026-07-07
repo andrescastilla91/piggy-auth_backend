@@ -1,0 +1,38 @@
+# =============================================================================
+#  PIGGY AUTH — Docker Compose
+#
+#  Servicio de autenticación SSO compartido del ecosistema.
+#  Se conecta al postgres de infra (schema: auth).
+#
+#  REQUISITO: La infra debe estar corriendo.
+#    cd ../infra && docker compose up -d
+#
+#  ARRANQUE:
+#    docker compose up -d
+# =============================================================================
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: piggy_auth_backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_HOST: piggy_postgres
+      NODE_ENV: ${NODE_ENV:-production}
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/api/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    networks:
+      - piggy_infra_net
+
+networks:
+  piggy_infra_net:
+    external: true
