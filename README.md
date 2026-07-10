@@ -163,10 +163,10 @@ POSTGRES_USER=piggy_app
 POSTGRES_PASSWORD=your_password
 POSTGRES_SCHEMA=auth
 
-# JWT — MISMO secreto que piggy-kids y piggy-pro
+# JWT — MISMO secreto que piggy-kids y piggy-pro (access token únicamente;
+# el refresh token no es JWT, ver sección "Cookies cross-domain")
 JWT_SECRET=your_shared_secret_min_32_chars
 JWT_EXPIRES_IN=15m
-JWT_REFRESH_EXPIRES_IN=7d
 
 # Google OAuth — Client ID/Secret compartido con todas las apps
 GOOGLE_CLIENT_ID=your_client_id
@@ -202,6 +202,8 @@ En producción, todos los dominios son `*.vadi-technologies.com` bajo HTTPS. La 
 ```
 
 En desarrollo local (`NODE_ENV !== production`): `sameSite: 'lax'`, `secure: false`.
+
+**Requiere `app.use(cookieParser())` en `main.ts`.** Sin este middleware, Express nunca puebla `req.cookies` — `AuthController.refresh()`/`logout()` leen `req.cookies?.['piggy_auth_refresh']`, que sería siempre `undefined` sin importar si la cookie llegó bien. (`cookie-parser` estaba en `package.json` desde el commit inicial pero nunca se conectó en `main.ts` — corregido.)
 
 ---
 

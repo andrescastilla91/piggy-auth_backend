@@ -2,10 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { Client } from 'pg';
+import * as cookieParser from 'cookie-parser';
 
-/** Crea el schema auth con una conexión raw ANTES de que TypeORM arranque.
- *  TypeORM necesita que el schema exista para crear su tabla de migraciones.
- */
 async function ensureAuthSchema() {
   const client = new Client({
     host:     process.env.POSTGRES_HOST     ?? 'localhost',
@@ -30,6 +28,7 @@ async function bootstrap() {
   });
 
   app.setGlobalPrefix('api');
+  app.use(cookieParser());
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -39,7 +38,6 @@ async function bootstrap() {
     }),
   );
 
-  // Trust proxy — requerido detrás de Railway / Cloudflare
   app.getHttpAdapter().getInstance().set('trust proxy', 1);
 
   app.enableCors({
